@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz E-dowód</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        input, select, button {
+            padding: 8px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 20px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 12px;
+        }
+        button:hover {
+            background: #0055aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Formularz E-dowód</h1>
+        <form id="edowod-form">
+            <label for="surname">Nazwisko:</label>
+            <input type="text" id="surname" name="surname" required>
+
+            <label for="given-names">Imiona:</label>
+            <input type="text" id="given-names" name="given-names" required>
+
+            <label for="citizenship">Obywatelstwo:</label>
+            <input type="text" id="citizenship" name="citizenship" value="POLSKIE" required>
+
+            <label for="birthdate">Data urodzenia:</label>
+            <input type="date" id="birthdate" name="birthdate" required>
+
+            <label for="id-number">Numer dowodu osobistego:</label>
+            <input type="text" id="id-number" name="id-number" required>
+
+            <label for="="gender">Płeć:</label>
+            <select id="gender" name="gender" required>
+                <option value="M">M</option>
+                <option value="K">K</option>
+            </select>
+
+            <label for="expiry-date">Termin ważności:</label>
+            <input type="date" id="expiry-date" name="expiry-date" required>
+
+            <label for="can-number">Numer CAN:</label>
+            <input type="text" id="can-number" name="can-number" required>
+
+            <label for="photo">Zdjęcie:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" required>
+
+            <button type="submit">Wygeneruj e-dowód</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('edowod-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                if (key !== 'photo') {
+                    data[key] = value;
+                }
+            });
+
+            const photoFile = formData.get('photo');
+            if (!photoFile) {
+                alert('Wybierz zdjęcie');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function() {
+                data.photo = reader.result; // base64
+                localStorage.setItem('edowodData', JSON.stringify(data));
+                window.location.href = 'edowod.html';
+            };
+            reader.readAsDataURL(photoFile);
+        });
+    </script>
+</body>
+</html>
